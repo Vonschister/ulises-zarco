@@ -683,17 +683,70 @@ footer {
   .nav-links { display: none; }
   .nav-burger { display: flex; }
   .case-grid-2 { grid-template-columns: 1fr; }
-  .exec-grid { grid-template-columns: 1fr; }
-  .case-header { flex-direction: column; }
-  .case-header-right { flex-direction: row; align-items: center; }
+  .exec-grid { grid-template-columns: repeat(2, 1fr); }
   .hero-stats { grid-template-columns: 1fr 1fr; }
   .contact-bottom { gap: 24px; }
+
+  /* ── CASE HEADER MOBILE REDESIGN ── */
+  .case-header {
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px 20px;
+  }
+  .case-header-left { width: 100%; }
+  .case-tag { font-size: 10px; padding: 4px 12px; margin-bottom: 12px; }
+  .case-title { font-size: clamp(26px, 7vw, 36px); margin-bottom: 6px; }
+  .case-subtitle { font-size: 13px; }
+
+  /* Right side: pills in a horizontal row + toggle at the end */
+  .case-header-right {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .case-kpi-pills {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 6px;
+    flex: 1;
+    overflow: hidden;
+  }
+  .kpi-pill {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 10px;
+    text-align: center;
+  }
+  .kpi-pill-val {
+    font-size: 17px;
+    white-space: nowrap;
+  }
+  .kpi-pill-lbl {
+    font-size: 9px;
+    letter-spacing: .04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .case-toggle { flex-shrink: 0; margin-left: 4px; }
 }
+
 @media (max-width: 480px) {
   .hero-stats { grid-template-columns: 1fr 1fr; }
   .projects-grid { grid-template-columns: 1fr; }
   .hero-ctas { flex-direction: column; }
   .contact-btns { flex-direction: column; align-items: center; }
+  .exec-grid { grid-template-columns: 1fr; }
+
+  /* Tighter pills on very small screens */
+  .kpi-pill { padding: 7px 6px; }
+  .kpi-pill-val { font-size: 15px; }
+  .kpi-pill-lbl { font-size: 8px; }
+  .case-header { padding: 20px 16px; }
 }
 
 /* ══════════════════════════════════════════
@@ -1418,7 +1471,7 @@ footer {
     </div>
     <div class="reel-grid fade-in">
       <div class="reel-card">
-        <iframe class="reel-video" src="https://www.youtube.com/embed/2nBT4ZjfCU4?si=AO0DmfXyZ_c6Tz8x" title="Lookdev & Lighting Reel — Ulises Zarco Rivera" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <iframe class="reel-video" src="https://www.youtube.com/embed/2nBT4ZjfCU4?si=jHwMEA0CJZBW9aWO" title="Lookdev & Lighting Reel — Ulises Zarco Rivera" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         <div class="reel-info">
           <div class="reel-tag">3D Production · Lighting Design</div>
           <div class="reel-title">Lookdev &amp; Lighting Reel</div>
@@ -1426,7 +1479,7 @@ footer {
         </div>
       </div>
       <div class="reel-card">
-        <iframe class="reel-video" src="https://www.youtube.com/embed/kr38Vyqe0ps" title="Carnival de México — Brand Campaign" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <iframe class="reel-video" src="https://www.youtube.com/embed/kr38Vyqe0ps?si=2ihXhWlQrzyakBaz" title="Carnival de México — Brand Campaign" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         <div class="reel-info">
           <div class="reel-tag">Brand Campaign · Creative Direction</div>
           <div class="reel-title">Carnival de México — Brand Campaign</div>
@@ -1475,7 +1528,7 @@ footer {
         <div class="gallery-item-placeholder">
           <span class="ph-icon">🗺️</span>
           <span class="ph-label">Yummy Campaign Map</span>
-          <span style="font-size:10px;color:rgba(244,242,238,.25);margin-top:4px;"><img src="/img/test.png" alt="Kapital CRM Dashboard" style="width:100%;height:100%;object-fit:cover;"></span>
+          <span style="font-size:10px;color:rgba(244,242,238,.25);margin-top:4px;">← reemplaza con tu imagen</span>
         </div>
         <!-- ► AQUÍ: <img src="TU_IMAGEN_YUMMY.jpg" alt="Yummy Campaign Map" style="width:100%;height:100%;object-fit:cover;"> -->
         <div class="gallery-overlay">
@@ -1494,7 +1547,7 @@ footer {
         <div class="gallery-item-placeholder">
           <span class="ph-icon">🏦</span>
           <span class="ph-label">Kapital CRM &amp; Funnel</span>
-          <span style="font-size:10px;color:rgba(244,242,238,.3);margin-top:4px;display:block"><img src="/img/test.png" alt="Kapital CRM Dashboard" style="width:100%;height:100%;object-fit:cover;"></span>
+          <span style="font-size:10px;color:rgba(244,242,238,.3);margin-top:4px;display:block">← agrega tu imagen aquí</span>
         </div>
         <!-- IMAGEN: reemplaza este bloque con: <img src="TU_IMAGEN.jpg" alt="Kapital CRM Dashboard" style="width:100%;height:100%;object-fit:cover;"> -->
         <div class="gallery-overlay">
@@ -1513,7 +1566,7 @@ footer {
         <div class="gallery-item-placeholder">
           <span class="ph-icon">👗</span>
           <span class="ph-label">Carnival Brand Identity</span>
-          <span style="font-size:10px;color:rgba(244,242,238,.25);margin-top:4px;"><img src="/img/test.png" alt="Kapital CRM Dashboard" style="width:100%;height:100%;object-fit:cover;"></span>
+          <span style="font-size:10px;color:rgba(244,242,238,.25);margin-top:4px;">← reemplaza con tu imagen</span>
         </div>
         <!-- ► AQUÍ: <img src="TU_IMAGEN_CARNIVAL.jpg" alt="Carnival de México Brand Identity" style="width:100%;height:100%;object-fit:cover;"> -->
         <div class="gallery-overlay">
@@ -1532,7 +1585,7 @@ footer {
         <div class="gallery-item-placeholder">
           <span class="ph-icon">🌿</span>
           <span class="ph-label">Holizenter — Brand &amp; Podcast</span>
-          <span style="font-size:10px;color:rgba(244,242,238,.25);margin-top:4px;"><img src="/img/test.png" alt="Kapital CRM Dashboard" style="width:100%;height:100%;object-fit:cover;"></span>
+          <span style="font-size:10px;color:rgba(244,242,238,.25);margin-top:4px;">← reemplaza con tu imagen</span>
         </div>
         <!-- ► AQUÍ: <img src="TU_IMAGEN_HOLIZENTER.jpg" alt="Holizenter Brand" style="width:100%;height:100%;object-fit:cover;"> -->
         <div class="gallery-overlay">
@@ -1551,7 +1604,7 @@ footer {
         <div class="gallery-item-placeholder">
           <span class="ph-icon">🗳️</span>
           <span class="ph-label">Electoral Campaign — Jueces 2025</span>
-          <span style="font-size:10px;color:rgba(244,242,238,.25);margin-top:4px;"><img src="/img/test.png" alt="Kapital CRM Dashboard" style="width:100%;height:100%;object-fit:cover;"></span>
+          <span style="font-size:10px;color:rgba(244,242,238,.25);margin-top:4px;">← reemplaza con tu imagen</span>
         </div>
         <!-- ► AQUÍ: <img src="TU_IMAGEN_CAMPANA.jpg" alt="Electoral Campaign Jueces 2025" style="width:100%;height:100%;object-fit:cover;"> -->
         <div class="gallery-overlay">
@@ -1591,12 +1644,12 @@ footer {
       <div class="contact-btns">
         <a href="#" onclick="revealContact('email'); return false;" class="btn-primary" id="email-btn" aria-label="Escríbeme por correo">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Email
+          Escríbeme por correo
         </a>
         <a href="https://linkedin.com/in/ulises-zarco-rivera" target="_blank" rel="noopener" class="btn-outline">LinkedIn ↗</a>
         <button class="btn-outline" onclick="openCallModal()" style="cursor:pointer;background:transparent;font-family:var(--font-body);font-size:14px;display:inline-flex;align-items:center;gap:10px;" aria-label="Llámame — selecciona número">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.27 1.21 2 2 0 012.25 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.9v2.02z"/></svg>
-          Phone
+          Llámame
         </button>
         <button id="cv-download-btn" onclick="downloadCV()" aria-label="Download Ulises Zarco Rivera CV as PDF">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1619,12 +1672,12 @@ footer {
   <div style="background:var(--ink-2);border:1px solid var(--muted-2);border-radius:var(--r-lg);padding:40px;max-width:420px;width:90%;text-align:center;position:relative;">
     <button onclick="closeCallModal()" style="position:absolute;top:16px;right:16px;width:36px;height:36px;background:var(--muted-3);border:1px solid var(--muted-2);border-radius:50%;cursor:pointer;color:var(--paper);font-size:18px;display:flex;align-items:center;justify-content:center;">✕</button>
     <div style="font-size:36px;margin-bottom:16px;">📞</div>
-    <h3 style="font-family:var(--font-disp);font-size:28px;font-weight:900;color:var(--paper);margin-bottom:8px;letter-spacing:-.02em;">Choose a Country</h3>
-    <p style="font-size:14px;color:var(--muted);margin-bottom:32px;">Pick an option according to your location</p>
+    <h3 style="font-family:var(--font-disp);font-size:28px;font-weight:900;color:var(--paper);margin-bottom:8px;letter-spacing:-.02em;">¿Dónde me llamas?</h3>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:32px;">Selecciona el número según tu ubicación</p>
     <div style="display:flex;flex-direction:column;gap:12px;">
       <a href="tel:+525522726401" onclick="closeCallModal()" style="display:flex;align-items:center;justify-content:space-between;background:rgba(200,242,90,.08);border:1px solid rgba(200,242,90,.25);border-radius:var(--r-md);padding:16px 20px;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(200,242,90,.16)'" onmouseout="this.style.background='rgba(200,242,90,.08)'">
         <div style="text-align:left;">
-          <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#C8F25A;margin-bottom:4px;">🇲🇽 Mexico</div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#C8F25A;margin-bottom:4px;">🇲🇽 México Local</div>
           <div style="font-size:18px;font-weight:700;color:var(--paper);">+52 55 2272 6401</div>
         </div>
         <svg width="20" height="20" fill="none" stroke="#C8F25A" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
