@@ -506,9 +506,9 @@ section { padding: clamp(64px, 8vw, 120px) 0; }
   display: block;
   z-index: 1;
 }
-/* Placeholder shown only when image fails / not present */
+/* Placeholder: shown only when image fails (onerror reveals it) */
 .gallery-item-placeholder {
-  display: flex;
+  display: none; /* hidden by default — only shown via onerror */
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -517,16 +517,17 @@ section { padding: clamp(64px, 8vw, 120px) 0; }
   padding: 20px;
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 0;
 }
 .gallery-item-placeholder .ph-icon { font-size: 32px; opacity: .3; }
 .gallery-item-placeholder .ph-label { font-size: 12px; color: var(--muted); font-weight: 500; }
-/* Overlay sits above image and placeholder */
+/* Overlay: invisible by default, fades in on hover to show the zoom icon */
 .gallery-overlay {
   position: absolute; inset: 0;
-  background: rgba(8,12,20,.6);
+  background: rgba(8,12,20,.55);
   display: flex; align-items: center; justify-content: center;
-  opacity: 0; transition: opacity .2s;
+  opacity: 0;
+  transition: opacity .25s ease;
   z-index: 2;
 }
 .gallery-item:hover .gallery-overlay { opacity: 1; }
@@ -534,7 +535,10 @@ section { padding: clamp(64px, 8vw, 120px) 0; }
   width: 44px; height: 44px;
   background: var(--paper); border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
+  transform: scale(0.85);
+  transition: transform .25s ease;
 }
+.gallery-item:hover .gallery-overlay-icon { transform: scale(1); }
 .gallery-upload-label {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   background: var(--muted-3); border: 1px dashed var(--muted-2);
@@ -1392,7 +1396,7 @@ footer {
         <div class="about-meta">
           <div class="meta-item"><div class="ml">Location</div><div class="mv">Mexico City, MX · Global</div></div>
           <div class="meta-item"><div class="ml">Languages</div><div class="mv">ES · EN · DE</div></div>
-          <div class="meta-item"><div class="ml">Email</div><div class="mv" style="color:var(--accent-a)"><a href="mailto:uzarcor@gmail.com" style="color:var(--accent-a)">uzarcor@gmail.com</a></div></div>
+          <div class="meta-item"><div class="ml">Email</div><div class="mv" style="color:var(--accent-a)"><a href="/cdn-cgi/l/email-protection#f7828d9685949885b7909a969e9bd994989a" style="color:var(--accent-a)"><span class="__cf_email__" data-cfemail="85f0ffe4f7e6eaf7c5e2e8e4ece9abe6eae8">[email&#160;protected]</span></a></div></div>
           <div class="meta-item"><div class="ml">LinkedIn</div><div class="mv" style="color:var(--accent-a)">/in/ulises-zarco-rivera</div></div>
         </div>
       </div>
@@ -1469,7 +1473,7 @@ footer {
       <!-- Item 0: OfficeMax — FIX: img is direct child with class gallery-img -->
       <div class="gallery-item" data-index="0" data-src="img/test.png" data-label="OfficeMax Impact — 125-KPI WBR Framework" onclick="openModal(0)" role="button" aria-label="View OfficeMax KPI Dashboard">
         <img src="img/test.png" alt="OfficeMax Dashboard" class="gallery-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="gallery-item-placeholder" style="display:none">
+        <div class="gallery-item-placeholder">
           <span class="ph-icon">📊</span>
           <span class="ph-label">OfficeMax Impact</span>
         </div>
@@ -1483,7 +1487,7 @@ footer {
       <!-- Item 1: Yummy -->
       <div class="gallery-item" data-index="1" data-src="img/yummy.png" data-label="Yummy Inc — Campaign Mexico" onclick="openModal(1)" role="button" aria-label="View Yummy Campaign Mexico">
         <img src="img/yummy.png" alt="Yummy Campaign Mexico" class="gallery-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="gallery-item-placeholder" style="display:none">
+        <div class="gallery-item-placeholder">
           <span class="ph-icon">🗺️</span>
           <span class="ph-label">Yummy Campaign Mexico</span>
         </div>
@@ -1497,7 +1501,7 @@ footer {
       <!-- Item 2: Kapital -->
       <div class="gallery-item" data-index="2" data-src="img/BA.png" data-label="Kapital (Banco Autofin) — Products" onclick="openModal(2)" role="button" aria-label="View Kapital CRM Architecture">
         <img src="img/BA.png" alt="Kapital CRM Architecture" class="gallery-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="gallery-item-placeholder" style="display:none">
+        <div class="gallery-item-placeholder">
           <span class="ph-icon">🏦</span>
           <span class="ph-label">Kapital CRM &amp; Funnel</span>
         </div>
@@ -1511,7 +1515,7 @@ footer {
       <!-- Item 3: Carnival -->
       <div class="gallery-item" data-index="3" data-src="img/Carnival.png" data-label="Carnival de México — Analysis" onclick="openModal(3)" role="button" aria-label="View Carnival eCommerce launch">
         <img src="img/Carnival.png" alt="Carnival Brand Identity" class="gallery-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="gallery-item-placeholder" style="display:none">
+        <div class="gallery-item-placeholder">
           <span class="ph-icon">👗</span>
           <span class="ph-label">Carnival Brand Identity</span>
         </div>
@@ -1525,7 +1529,7 @@ footer {
       <!-- Item 4: Holizenter -->
       <div class="gallery-item" data-index="4" data-src="img/Holizenter.png" data-label="Holizenter — Brand Identity" onclick="openModal(4)" role="button" aria-label="View Holizenter Brand">
         <img src="img/Holizenter.png" alt="Holizenter Brand" class="gallery-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="gallery-item-placeholder" style="display:none">
+        <div class="gallery-item-placeholder">
           <span class="ph-icon">🌿</span>
           <span class="ph-label">Holizenter — Brand &amp; Podcast</span>
         </div>
@@ -1539,7 +1543,7 @@ footer {
       <!-- Item 5: Jueces -->
       <div class="gallery-item" data-index="5" data-src="img/Jueces.png" data-label="Electoral Campaign — Jueces México 2025" onclick="openModal(5)" role="button" aria-label="View Electoral Campaign 2025">
         <img src="img/Jueces.png" alt="Electoral Campaign 2025" class="gallery-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="gallery-item-placeholder" style="display:none">
+        <div class="gallery-item-placeholder">
           <span class="ph-icon">🗳️</span>
           <span class="ph-label">Electoral Campaign — Jueces 2025</span>
         </div>
@@ -1627,11 +1631,11 @@ footer {
 <footer>
   <div class="footer-inner">
     <div class="footer-logo">UZR<span>.</span></div>
-    <div class="footer-copy">© 2026 Ulises Zarco Rivera · Global · uzarcor@gmail.com</div>
+    <div class="footer-copy">© 2026 Ulises Zarco Rivera · Global · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4e3b342f3c2d213c0e29232f2722602d2123">[email&#160;protected]</a></div>
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── NAV SCROLL ──
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
