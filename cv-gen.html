@@ -1,36 +1,30 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>CV Test</title>
-</head>
+<head><meta charset="UTF-8"><title>CV Test</title></head>
 <body>
-<h3>CV Generator - Test</h3>
-<button onclick="generate()" id="btn">Generar CV</button>
-<pre id="out" style="white-space:pre-wrap;font-size:12px;margin-top:1rem;"></pre>
-
+<h3>Paso 1 — Ver modelos disponibles</h3>
+<button onclick="listModels()">Ver modelos disponibles</button>
+<button onclick="generate()" style="margin-left:1rem">Probar gemini-2.0-flash</button>
+<pre id="out" style="white-space:pre-wrap;font-size:12px;margin-top:1rem;background:#f5f5f5;padding:1rem;max-height:80vh;overflow:auto;"></pre>
 <script>
 const KEY = "AIzaSyCmlPdus6o-Jzrm7t1_CDvuTtyNq2fPTCY";
 
+async function listModels() {
+  document.getElementById('out').textContent = "Cargando...";
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${KEY}`);
+  const data = await res.json();
+  const names = (data.models||[]).map(m => m.name + " | " + (m.supportedGenerationMethods||[]).join(', ')).join('\n');
+  document.getElementById('out').textContent = names || JSON.stringify(data,null,2);
+}
+
 async function generate() {
-  document.getElementById('btn').disabled = true;
   document.getElementById('out').textContent = "Generando...";
-
-  const prompt = `Genera un resumen profesional en 2 oraciones para un Marketing Manager con 8 años de experiencia en eCommerce. Devuelve solo el texto, sin JSON.`;
-
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-    });
-    const data = await res.json();
-    document.getElementById('out').textContent = JSON.stringify(data, null, 2);
-  } catch(e) {
-    document.getElementById('out').textContent = "ERROR: " + e.message;
-  }
-
-  document.getElementById('btn').disabled = false;
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${KEY}`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({contents:[{parts:[{text:"Di hola en español."}]}]})
+  });
+  const data = await res.json();
+  document.getElementById('out').textContent = JSON.stringify(data,null,2);
 }
 </script>
 </body>
