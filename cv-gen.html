@@ -6,56 +6,39 @@
 <title>CV Generator · Ulises Zarco Rivera</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-:root {
-  --navy: #1a1a2e; --gold: #e8c547; --bg: #f7f6f2;
-  --surface: #fff; --border: rgba(26,26,46,0.1); --muted: #6b6b80;
-}
+:root { --navy:#1a1a2e; --gold:#e8c547; --bg:#f7f6f2; --surface:#fff; --border:rgba(26,26,46,0.1); --muted:#6b6b80; }
 * { box-sizing:border-box; margin:0; padding:0; }
 body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--navy); min-height:100vh; }
-
-.topbar { background:var(--navy); height:52px; display:flex; align-items:center; padding:0 2rem; gap:12px; position:sticky; top:0; z-index:10; }
-.topbar-logo { font-family:'DM Serif Display',serif; color:var(--gold); font-size:20px; }
-.topbar-sep { color:rgba(255,255,255,0.2); }
-.topbar-name { color:rgba(255,255,255,0.6); font-size:13px; }
-.topbar-tag { color:var(--gold); font-size:13px; font-weight:500; }
+.topbar { background:var(--navy); height:52px; display:flex; align-items:center; padding:0 2rem; gap:12px; }
+.tlogo { font-family:'DM Serif Display',serif; color:var(--gold); font-size:20px; }
+.tsep { color:rgba(255,255,255,0.2); }
+.tname { color:rgba(255,255,255,0.6); font-size:13px; }
+.ttag { color:var(--gold); font-size:13px; font-weight:500; }
 .lang-toggle { margin-left:auto; display:flex; border:0.5px solid rgba(255,255,255,0.2); border-radius:6px; overflow:hidden; }
-.lang-btn { padding:5px 14px; font-size:12px; font-weight:500; background:transparent; border:none; cursor:pointer; color:rgba(255,255,255,0.5); font-family:'DM Sans',sans-serif; transition:all .15s; }
-.lang-btn.on { background:var(--gold); color:var(--navy); }
-
+.lbtn { padding:5px 14px; font-size:12px; font-weight:500; background:transparent; border:none; cursor:pointer; color:rgba(255,255,255,0.5); font-family:'DM Sans',sans-serif; transition:all .15s; }
+.lbtn.on { background:var(--gold); color:var(--navy); }
 .main { max-width:1100px; margin:0 auto; padding:2rem 1.5rem; display:grid; grid-template-columns:400px 1fr; gap:1.5rem; }
 @media(max-width:860px){ .main{ grid-template-columns:1fr; } }
-
-.panel { background:var(--surface); border:0.5px solid var(--border); border-radius:12px; padding:1.25rem; }
-.panel + .panel { margin-top:1rem; }
+.panel { background:var(--surface); border:0.5px solid var(--border); border-radius:12px; padding:1.25rem; margin-bottom:1rem; }
 .ptitle { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:1rem; }
 .fg { margin-bottom:.85rem; }
-.fg:last-child { margin-bottom:0; }
 label { display:block; font-size:12px; font-weight:500; color:var(--muted); margin-bottom:4px; }
-input[type=text], select, textarea {
-  width:100%; padding:8px 11px; border:0.5px solid var(--border); border-radius:8px;
-  font-family:'DM Sans',sans-serif; font-size:13.5px; color:var(--navy);
-  background:var(--bg); outline:none; transition:border-color .15s;
-}
+input[type=text], select, textarea { width:100%; padding:8px 11px; border:0.5px solid var(--border); border-radius:8px; font-family:'DM Sans',sans-serif; font-size:13.5px; color:var(--navy); background:var(--bg); outline:none; transition:border-color .15s; }
 input:focus, select:focus, textarea:focus { border-color:var(--navy); background:#fff; }
 textarea { resize:vertical; min-height:90px; line-height:1.5; }
 select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b80' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; padding-right:28px; appearance:none; }
-
-.chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; }
 .chip { padding:4px 10px; background:var(--bg); border:0.5px solid var(--border); border-radius:20px; font-size:12px; color:var(--muted); cursor:pointer; transition:all .15s; user-select:none; }
 .chip:hover { border-color:var(--navy); color:var(--navy); }
 .chip.on { background:var(--navy); border-color:var(--navy); color:var(--gold); }
-
-.genbtn { width:100%; padding:13px; background:var(--navy); color:var(--gold); border:none; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; margin-top:1rem; transition:opacity .15s; letter-spacing:.02em; }
+.genbtn { width:100%; padding:13px; background:var(--navy); color:var(--gold); border:none; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:opacity .15s; letter-spacing:.02em; }
 .genbtn:hover { opacity:.85; }
 .genbtn:disabled { opacity:.35; cursor:not-allowed; }
-
-/* result */
 .empty { background:var(--surface); border:0.5px dashed var(--border); border-radius:12px; padding:3rem; text-align:center; color:var(--muted); font-size:14px; }
 .loading { background:var(--surface); border:0.5px solid var(--border); border-radius:12px; padding:3rem; text-align:center; display:none; }
 .loading.show { display:block; }
 .spinner { display:inline-block; width:26px; height:26px; border:2.5px solid var(--border); border-top-color:var(--navy); border-radius:50%; animation:spin .65s linear infinite; }
 @keyframes spin { to{ transform:rotate(360deg); } }
-
 .cvcard { background:#fff; border:0.5px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(26,26,46,.07); display:none; }
 .cvcard.show { display:block; }
 .cvhd { background:var(--navy); padding:1.4rem 1.8rem; }
@@ -80,7 +63,6 @@ select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.or
 .cedu-d { font-size:12px; font-weight:500; }
 .cedu-s { font-size:11px; color:var(--muted); margin-bottom:5px; }
 .clang { font-size:12px; color:#333; line-height:1.9; }
-
 .expbar { display:none; gap:8px; margin-top:1rem; }
 .expbar.show { display:flex; }
 .expbtn { flex:1; padding:10px; border-radius:9px; font-size:13px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; border:0.5px solid var(--border); background:#fff; color:var(--navy); transition:all .15s; }
@@ -92,14 +74,14 @@ select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.or
 <body>
 
 <div class="topbar">
-  <div class="topbar-logo">UZR</div>
-  <span class="topbar-sep">·</span>
-  <span class="topbar-name">Ulises Zarco Rivera</span>
-  <span class="topbar-sep">·</span>
-  <span class="topbar-tag">Smart CV Generator</span>
+  <div class="tlogo">UZR</div>
+  <span class="tsep">·</span>
+  <span class="tname">Ulises Zarco Rivera</span>
+  <span class="tsep">·</span>
+  <span class="ttag">Smart CV Generator</span>
   <div class="lang-toggle">
-    <button class="lang-btn on" id="btnEs" onclick="setLang('es')">ES</button>
-    <button class="lang-btn" id="btnEn" onclick="setLang('en')">EN</button>
+    <button class="lbtn on" id="btnEs" onclick="setLang('es')">ES</button>
+    <button class="lbtn" id="btnEn" onclick="setLang('en')">EN</button>
   </div>
 </div>
 
@@ -107,8 +89,8 @@ select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.or
   <div>
     <div class="panel">
       <div class="ptitle">Vacante</div>
-      <div class="fg"><label>Puesto *</label><input type="text" id="jobTitle" placeholder="ej. Head of Growth, eCommerce Manager..." /></div>
-      <div class="fg"><label>Empresa</label><input type="text" id="company" placeholder="ej. MercadoLibre, Rappi..." /></div>
+      <div class="fg"><label>Puesto</label><input type="text" id="jobTitle" /></div>
+      <div class="fg"><label>Empresa</label><input type="text" id="company" /></div>
       <div class="fg">
         <label>Industria</label>
         <select id="industry">
@@ -121,7 +103,7 @@ select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.or
           <option>Agencia Digital</option>
           <option>Marketplace</option>
           <option>Salud / Wellness</option>
-          <option>Educación / EdTech</option>
+          <option>Educacion / EdTech</option>
         </select>
       </div>
       <div class="fg">
@@ -130,23 +112,24 @@ select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.or
           <option value="Senior Specialist">Senior IC / Especialista</option>
           <option value="Manager">Manager / Team Lead</option>
           <option value="Director">Director</option>
-          <option value="VP / C-Level">VP / C-Level</option>
+          <option value="VP">VP / C-Level</option>
         </select>
       </div>
-      <div class="fg"><label>Job Description / Keywords</label><textarea id="jobDesc" placeholder="Pega el JD o palabras clave..."></textarea></div>
+      <div class="fg"><label>Job Description / Keywords</label><textarea id="jobDesc"></textarea></div>
     </div>
-
     <div class="panel">
-      <div class="ptitle">Énfasis de habilidades</div>
+      <div class="ptitle">Enfasis de habilidades</div>
       <div class="chips" id="chipsWrap"></div>
     </div>
-
-    <button class="genbtn" id="genBtn" onclick="generate()">Generar CV inteligente →</button>
+    <button class="genbtn" id="genBtn" onclick="generate()">Generar CV inteligente</button>
   </div>
 
   <div>
     <div class="empty" id="emptyState">Completa el formulario y genera tu CV adaptado a la vacante</div>
-    <div class="loading" id="loadingState"><div class="spinner"></div><p style="margin-top:12px;font-size:13px;color:var(--muted)">Adaptando CV...</p></div>
+    <div class="loading" id="loadingState">
+      <div class="spinner"></div>
+      <p style="margin-top:12px;font-size:13px;color:var(--muted)">Adaptando CV...</p>
+    </div>
     <div class="cvcard" id="cvCard">
       <div class="cvhd">
         <div class="cvhd-name" id="oName"></div>
@@ -158,7 +141,7 @@ select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.or
         <div class="csec"><div class="csec-t" id="lExp">Experiencia</div><div id="oExp"></div></div>
         <div class="ccols">
           <div>
-            <div class="csec"><div class="csec-t" id="lEdu">Educación</div><div id="oEdu"></div></div>
+            <div class="csec"><div class="csec-t" id="lEdu">Educacion</div><div id="oEdu"></div></div>
             <div class="csec"><div class="csec-t" id="lLang">Idiomas</div><div class="clang" id="oLang"></div></div>
           </div>
           <div class="csec"><div class="csec-t" id="lSkills">Habilidades Clave</div><div class="cskills" id="oSkills"></div></div>
@@ -167,205 +150,209 @@ select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.or
     </div>
     <div class="expbar" id="expBar">
       <button class="expbtn" onclick="copyPlain()">Copiar texto plano</button>
-      <button class="expbtn primary" onclick="printCV()">Exportar PDF →</button>
+      <button class="expbtn primary" onclick="printCV()">Exportar PDF</button>
     </div>
   </div>
 </div>
 
 <script>
-const OR_KEY = "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";
-const OR_URL = "https://openrouter.ai/api/v1/chat/completions";
-const MODEL  = "meta-llama/llama-3.3-70b-instruct:free";
+var OR_KEY = "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";
+var OR_URL = "https://openrouter.ai/api/v1/chat/completions";
+var OR_MODEL = "meta-llama/llama-3.3-70b-instruct:free";
 
-const PROFILE = {
-  name:"Ulises Zarco Rivera, MFA", email:"uzarcor@gmail.com", phone:"+1 409 995 4108", linkedin:"linkedin.com/in/ulises-zarco",
-  experience:[
-    {role:"Co-founder",company:"Holizenter",dates:"11/2023–10/2025",bullets:["Co-fundé identidad de marca, visión y estrategia financiera para viabilidad a largo plazo.","Ejecuté estrategias de growth e inbound: podcasts, email, eventos live y LinkedIn.","Diseñé campañas omnicanal y establecí partnerships estratégicos sin agencias externas."]},
-    {role:"Digital Marketing & CRM Manager",company:"Banco Autofin / Kapital",dates:"10/2022–11/2023",bullets:["Lideré migración a GA4 y reporting centralizado, reduciendo latencia de datos 75%.","Campañas Google Ads & Meta Ads: 1,900+ leads/mes, CAC reducido 20%.","Implementé Zoho CRM con lead scoring y journeys automatizados, conversión +30%.","Dirigí NPS y estudios UX; NPS mejoró +8 pts. IVR: de 150s a 33s."]},
-    {role:"Marketing Manager",company:"Yummy Inc",dates:"01/2022–09/2022",bullets:["Lancé campañas OoH y digitales en entrada al mercado mexicano.","Coordiné agencias de PR y performance; gestioné push/SMS/email con Infobip.","Creé dashboards de KPIs para gestión de ROI y presupuestos de marketing."]},
-    {role:"E-commerce Optimization Specialist",company:"OfficeMax",dates:"10/2020–12/2021",bullets:["Gestioné key accounts (HP, Brother, Crayola, Henkel); Google Partner certification.","Paid media (Google Ads, Meta Ads): ROI +22%.","Email marketing con segmentación por comportamiento: open rate +18%, CTR +12%.","Negocié acuerdos comerciales con marcas para ampliar alcance y revenue."]},
-    {role:"Digital Marketing Manager",company:"Carnival de México",dates:"06/2018–09/2020",bullets:["Lideré brand refresh y lanzamiento digital omnicanal desde cero.","Desarrollé eCommerce en sitio propio, Amazon y Mercado Libre.","Supervisé equipos creativos y técnicos internos (diseñador + dev full-stack)."]},
-    {role:"Content Manager",company:"Bloom Tulum",dates:"01/2016–05/2018",bullets:["Funnel de conversión para leads inmobiliarios; campañas Meta y Google Ads.","Contenido de marca publicado en medios premium (revista Aeroméxico)."]}
+var PROFILE = {
+  name: "Ulises Zarco Rivera, MFA",
+  email: "uzarcor@gmail.com",
+  phone: "+1 409 995 4108",
+  linkedin: "linkedin.com/in/ulises-zarco",
+  experience: [
+    {role:"Co-founder", company:"Holizenter", dates:"11/2023-10/2025", bullets:["Co-funde identidad de marca, vision y estrategia financiera.", "Estrategias de growth e inbound: podcasts, email, eventos live y LinkedIn.", "Campanas omnicanal y partnerships estrategicos sin agencias externas."]},
+    {role:"Digital Marketing & CRM Manager", company:"Banco Autofin / Kapital", dates:"10/2022-11/2023", bullets:["Migracion a GA4 y reporting centralizado, latencia de datos -75%.", "Google Ads y Meta Ads: 1900+ leads/mes, CAC reducido 20%.", "Zoho CRM con lead scoring y journeys automatizados, conversion +30%.", "NPS +8 pts. IVR renovado: de 150s a 33s."]},
+    {role:"Marketing Manager", company:"Yummy Inc", dates:"01/2022-09/2022", bullets:["Campanas OoH y digitales en entrada al mercado mexicano.", "Coordine agencias PR y performance; push/SMS/email con Infobip.", "Dashboards de KPIs para ROI y presupuestos."]},
+    {role:"E-commerce Optimization Specialist", company:"OfficeMax", dates:"10/2020-12/2021", bullets:["Key accounts HP, Brother, Crayola, Henkel; Google Partner certification.", "Paid media Google Ads y Meta Ads: ROI +22%.", "Email marketing segmentado: open rate +18%, CTR +12%."]},
+    {role:"Digital Marketing Manager", company:"Carnival de Mexico", dates:"06/2018-09/2020", bullets:["Brand refresh y lanzamiento digital omnicanal desde cero.", "eCommerce en sitio propio, Amazon y Mercado Libre.", "Supervise equipos creativos y tecnicos internos."]},
+    {role:"Content Manager", company:"Bloom Tulum", dates:"01/2016-05/2018", bullets:["Funnel de conversion para leads inmobiliarios.", "Campanas Meta y Google Ads. Contenido en medios premium."]}
   ],
-  education:[
-    {degree:"MFA — Guión y Producción Audiovisual",school:"Universidad Panamericana",year:"2018"},
-    {degree:"Diplomado en Marketing Digital",school:"Universidad Panamericana",year:"2017"},
-    {degree:"Ing. en Animación Digital",school:"Universidad Panamericana",year:"2016"}
+  education: [
+    {degree:"MFA Guion y Produccion Audiovisual", school:"Universidad Panamericana", year:"2018"},
+    {degree:"Diplomado en Marketing Digital", school:"Universidad Panamericana", year:"2017"},
+    {degree:"Ing. en Animacion Digital", school:"Universidad Panamericana", year:"2016"}
   ],
-  languages:["Español (nativo)","Inglés (fluido)","Alemán (intermedio)"],
-  tools:"GA4, Google Ads, Meta Ads, HubSpot, Zoho CRM, Salesforce, VTEX, Shopify, Magento, Semrush, SQL, HTML, Monday, Jira, Trello"
+  languages: ["Espanol nativo","Ingles fluido","Aleman intermedio"],
+  tools: "GA4, Google Ads, Meta Ads, HubSpot, Zoho CRM, Salesforce, VTEX, Shopify, Magento, Semrush, SQL, HTML, Monday, Jira, Trello"
 };
 
-const CHIPS_LIST = ["Performance Marketing","eCommerce","CRM / Automatización","Data Analytics","Growth Hacking","Brand Strategy","Email Marketing","Paid Media","SEO / SEM","Liderazgo de equipos","UX / CX","Marketplace","Transformación Digital","KPIs & Dashboards","Agile / Scrum"];
-let selSkills=[], lang='es', lastCV=null;
+var CHIPS = ["Performance Marketing","eCommerce","CRM Automatizacion","Data Analytics","Growth Hacking","Brand Strategy","Email Marketing","Paid Media","SEO SEM","Liderazgo de equipos","UX CX","Marketplace","Transformacion Digital","KPIs Dashboards","Agile Scrum"];
+var selSkills = [];
+var lang = "es";
+var lastCV = null;
 
-function initChips(){
-  const w=document.getElementById('chipsWrap');
-  CHIPS_LIST.forEach(s=>{
-    const el=document.createElement('div');
-    el.className='chip'; el.textContent=s;
-    el.onclick=()=>{ const i=selSkills.indexOf(s); if(i>-1){selSkills.splice(i,1);el.classList.remove('on');}else{selSkills.push(s);el.classList.add('on');} };
+function initChips() {
+  var w = document.getElementById("chipsWrap");
+  CHIPS.forEach(function(s) {
+    var el = document.createElement("div");
+    el.className = "chip";
+    el.textContent = s;
+    el.onclick = function() {
+      var i = selSkills.indexOf(s);
+      if (i > -1) { selSkills.splice(i, 1); el.classList.remove("on"); }
+      else { selSkills.push(s); el.classList.add("on"); }
+    };
     w.appendChild(el);
   });
 }
-function setLang(l){ lang=l; document.getElementById('btnEs').classList.toggle('on',l==='es'); document.getElementById('btnEn').classList.toggle('on',l==='en'); }
 
-async function generate(){
-  const jobTitle=document.getElementById('jobTitle').value.trim();
-  if(!jobTitle){alert('Ingresa el título del puesto.');return;}
-  const btn=document.getElementById('genBtn'); btn.disabled=true; btn.textContent='Generando…';
-  document.getElementById('emptyState').style.display='none';
-  document.getElementById('cvCard').classList.remove('show');
-  document.getElementById('expBar').classList.remove('show');
-  document.getElementById('loadingState').classList.add('show');
-
-  const isEn=lang==='en';
-  const prompt=`You are an expert ATS-optimized CV writer. Generate a tailored one-page CV.
-
-CANDIDATE PROFILE:
-${JSON.stringify(PROFILE)}
-
-TARGET:
-- Title: ${jobTitle}
-- Company: ${document.getElementById('company').value||'N/A'}
-- Industry: ${document.getElementById('industry').value||'Digital Marketing'}
-- Seniority: ${document.getElementById('seniority').value}
-- JD/Keywords: ${document.getElementById('jobDesc').value||'Infer from role'}
-${selSkills.length?'- Emphasize: '+selSkills.join(', '):''}
-
-RULES:
-1. ${isEn?'Write EVERYTHING in English.':'Escribe TODO en español.'}
-2. Sharp 2-sentence summary tailored to this role. Quantify impact.
-3. Pick 3-4 most relevant roles. Rewrite bullets with JD keywords. Max 3 bullets each.
-4. 10-12 most relevant skills.
-5. targetTitle = target role title.
-6. Return ONLY raw JSON, no markdown, no backticks, no explanation:
-{"name":"Ulises Zarco Rivera, MFA","targetTitle":"...","email":"uzarcor@gmail.com","phone":"+1 409 995 4108","linkedin":"linkedin.com/in/ulises-zarco","summary":"...","experience":[{"role":"...","company":"...","dates":"...","bullets":["...","...","..."]}],"skills":["..."],"education":[{"degree":"...","school":"...","year":"..."}],"languages":["..."]}`;
-
-  try{
-    const res=await fetch(OR_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${OR_KEY}`},
-      body:JSON.stringify({model:MODEL,messages:[{role:'user',content:prompt}],temperature:0.7,max_tokens:2000})
-    });
-    const data=await res.json();
-    if(data.error) throw new Error(data.error.message);
-    const raw=data.choices[0].message.content;
-    const s=raw.indexOf('{'), e=raw.lastIndexOf('}')+1;
-    if(s===-1) throw new Error('No JSON in response: '+raw.substring(0,200));
-    const cv=JSON.parse(raw.slice(s,e));
-    lastCV=cv;
-    document.getElementById('loadingState').classList.remove('show');
-    render(cv,isEn);
-    document.getElementById('cvCard').classList.add('show');
-    document.getElementById('expBar').classList.add('show');
-  }catch(e){
-    document.getElementById('loadingState').classList.remove('show');
-    document.getElementById('emptyState').style.display='block';
-    document.getElementById('emptyState').textContent='Error: '+e.message;
-  }
-  btn.disabled=false; btn.textContent='Generar CV inteligente →';
+function setLang(l) {
+  lang = l;
+  document.getElementById("btnEs").classList.toggle("on", l === "es");
+  document.getElementById("btnEn").classList.toggle("on", l === "en");
 }
 
-function render(cv,isEn){
-  document.getElementById('oName').textContent=cv.name;
-  document.getElementById('oRole').textContent=cv.targetTitle;
-  document.getElementById('oContacts').innerHTML=[cv.email,cv.phone,cv.linkedin].map(c=>`<span class="cvhd-c">${c}</span>`).join('<span class="cvhd-c">·</span>');
-  document.getElementById('lProfile').textContent=isEn?'Professional Profile':'Perfil Profesional';
-  document.getElementById('lExp').textContent=isEn?'Experience':'Experiencia';
-  document.getElementById('lEdu').textContent=isEn?'Education':'Educación';
-  document.getElementById('lLang').textContent=isEn?'Languages':'Idiomas';
-  document.getElementById('lSkills').textContent=isEn?'Key Skills':'Habilidades Clave';
-  document.getElementById('oSummary').textContent=cv.summary;
-  document.getElementById('oExp').innerHTML=cv.experience.map(e=>`
-    <div class="cexp">
-      <div class="cexp-row"><div><span class="cexp-role">${e.role}</span> <span class="cexp-co">· ${e.company}</span></div><span class="cexp-dates">${e.dates}</span></div>
-      <ul class="cbullets">${e.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
-    </div>`).join('');
-  document.getElementById('oEdu').innerHTML=cv.education.map(e=>`<div class="cedu-d">${e.degree}</div><div class="cedu-s">${e.school} · ${e.year}</div>`).join('');
-  document.getElementById('oLang').innerHTML=(cv.languages||[]).join('<br>');
-  document.getElementById('oSkills').innerHTML=cv.skills.map(s=>`<span class="cskill">${s}</span>`).join('');
+function generate() {
+  var jobTitle = document.getElementById("jobTitle").value.trim();
+  if (!jobTitle) { alert("Ingresa el titulo del puesto."); return; }
+  var btn = document.getElementById("genBtn");
+  btn.disabled = true;
+  btn.textContent = "Generando...";
+  document.getElementById("emptyState").style.display = "none";
+  document.getElementById("cvCard").classList.remove("show");
+  document.getElementById("expBar").classList.remove("show");
+  document.getElementById("loadingState").classList.add("show");
+
+  var isEn = lang === "en";
+  var prompt = "You are an expert ATS CV writer. Generate a tailored one-page CV.\n\n"
+    + "CANDIDATE: " + JSON.stringify(PROFILE) + "\n\n"
+    + "TARGET ROLE:\n"
+    + "Title: " + jobTitle + "\n"
+    + "Company: " + (document.getElementById("company").value || "N/A") + "\n"
+    + "Industry: " + (document.getElementById("industry").value || "Digital Marketing") + "\n"
+    + "Seniority: " + document.getElementById("seniority").value + "\n"
+    + "JD Keywords: " + (document.getElementById("jobDesc").value || "Infer from role") + "\n"
+    + (selSkills.length ? "Emphasize: " + selSkills.join(", ") + "\n" : "")
+    + "\nINSTRUCTIONS:\n"
+    + (isEn ? "Write EVERYTHING in English.\n" : "Escribe TODO en espanol.\n")
+    + "Write a sharp 2-sentence summary with quantified impact tailored to this role.\n"
+    + "Pick 3-4 most relevant roles from experience. Rewrite bullets using JD keywords. Max 3 bullets each.\n"
+    + "Pick 10-12 most relevant skills.\n"
+    + "targetTitle must reflect the target role.\n"
+    + "IMPORTANT: Return ONLY raw valid JSON. No markdown. No backticks. No explanation. Start directly with { and end with }.\n"
+    + "JSON structure:\n"
+    + '{"name":"string","targetTitle":"string","email":"string","phone":"string","linkedin":"string","summary":"string","experience":[{"role":"string","company":"string","dates":"string","bullets":["string","string","string"]}],"skills":["string"],"education":[{"degree":"string","school":"string","year":"string"}],"languages":["string"]}';
+
+  fetch(OR_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + OR_KEY },
+    body: JSON.stringify({ model: OR_MODEL, messages: [{ role: "user", content: prompt }], temperature: 0.7, max_tokens: 2000 })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.error) throw new Error(data.error.message);
+    var raw = data.choices[0].message.content;
+    var s = raw.indexOf("{");
+    var e = raw.lastIndexOf("}") + 1;
+    if (s === -1) throw new Error("No JSON en respuesta: " + raw.substring(0, 200));
+    var cv = JSON.parse(raw.slice(s, e));
+    lastCV = cv;
+    document.getElementById("loadingState").classList.remove("show");
+    render(cv, isEn);
+    document.getElementById("cvCard").classList.add("show");
+    document.getElementById("expBar").classList.add("show");
+    btn.disabled = false;
+    btn.textContent = "Generar CV inteligente";
+  })
+  .catch(function(err) {
+    document.getElementById("loadingState").classList.remove("show");
+    document.getElementById("emptyState").style.display = "block";
+    document.getElementById("emptyState").textContent = "Error: " + err.message;
+    btn.disabled = false;
+    btn.textContent = "Generar CV inteligente";
+  });
 }
 
-function printCV(){
-  if(!lastCV) return;
-  const cv=lastCV; const isEn=lang==='en';
-  const l=isEn?{p:'Professional Profile',e:'Experience',ed:'Education',la:'Languages',s:'Key Skills'}:{p:'Perfil Profesional',e:'Experiencia',ed:'Educación',la:'Idiomas',s:'Habilidades Clave'};
-  const w=window.open('','_blank');
-  w.document.write(`<!DOCTYPE html><html><head><title>CV — ${cv.name}</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
-  <style>
-    @page{margin:0;size:letter} *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'DM Sans',sans-serif;width:8.5in;height:11in;overflow:hidden;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    .hd{background:#1a1a2e!important;padding:1.1rem 1.7rem}
-    h1{font-family:'DM Serif Display',serif;color:white;font-size:23px}
-    .role{color:#e8c547;font-size:13px;font-weight:500;margin-top:3px}
-    .contacts{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
-    .contact{font-size:11px;color:rgba(255,255,255,.65)}
-    .bd{padding:1.1rem 1.7rem}
-    .st{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#1a1a2e;border-bottom:2px solid #e8c547;padding-bottom:3px;margin-bottom:7px;margin-top:10px}
-    .summary{font-size:12px;line-height:1.6;color:#333;margin-bottom:10px}
-    .exp{margin-bottom:8px}
-    .er{display:flex;justify-content:space-between;align-items:baseline}
-    .erole{font-size:12.5px;font-weight:600;color:#1a1a2e}
-    .eco{color:#b8960a;font-size:12px;font-weight:500}
-    .edates{font-size:10.5px;color:#888}
-    ul{padding-left:14px;margin-top:3px}
-    li{font-size:11px;line-height:1.5;color:#333;margin-bottom:1px}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:8px}
-    .skill{background:#f0efe6;border-radius:3px;padding:2px 7px;font-size:10.5px;color:#1a1a2e;display:inline-block;margin:2px}
-    .edu-d{font-size:11.5px;font-weight:500;color:#1a1a2e}
-    .edu-s{font-size:10.5px;color:#666;margin-bottom:4px}
-    .lang{font-size:11.5px;color:#333;line-height:1.8}
-  </style></head><body>
-  <div class="hd"><h1>${cv.name}</h1><div class="role">${cv.targetTitle}</div>
-  <div class="contacts">${[cv.email,cv.phone,cv.linkedin].map(c=>`<span class="contact">${c}</span>`).join('<span class="contact">·</span>')}</div></div>
-  <div class="bd">
-    <div class="st">${l.p}</div><div class="summary">${cv.summary}</div>
-    <div class="st">${l.e}</div>
-    ${cv.experience.map(e=>`<div class="exp"><div class="er"><div><span class="erole">${e.role}</span> <span class="eco">· ${e.company}</span></div><span class="edates">${e.dates}</span></div><ul>${e.bullets.map(b=>`<li>${b}</li>`).join('')}</ul></div>`).join('')}
-    <div class="two">
-      <div>
-        <div class="st">${l.ed}</div>${cv.education.map(e=>`<div class="edu-d">${e.degree}</div><div class="edu-s">${e.school} · ${e.year}</div>`).join('')}
-        <div class="st" style="margin-top:8px">${l.la}</div><div class="lang">${(cv.languages||[]).join('<br>')}</div>
-      </div>
-      <div><div class="st">${l.s}</div>${cv.skills.map(s=>`<span class="skill">${s}</span>`).join('')}</div>
-    </div>
-  </div>
-<script>
+function render(cv, isEn) {
+  document.getElementById("oName").textContent = cv.name;
+  document.getElementById("oRole").textContent = cv.targetTitle;
+  document.getElementById("oContacts").innerHTML = [cv.email, cv.phone, cv.linkedin]
+    .map(function(c) { return '<span class="cvhd-c">' + c + "</span>"; })
+    .join('<span class="cvhd-c"> · </span>');
+  document.getElementById("lProfile").textContent = isEn ? "Professional Profile" : "Perfil Profesional";
+  document.getElementById("lExp").textContent = isEn ? "Experience" : "Experiencia";
+  document.getElementById("lEdu").textContent = isEn ? "Education" : "Educacion";
+  document.getElementById("lLang").textContent = isEn ? "Languages" : "Idiomas";
+  document.getElementById("lSkills").textContent = isEn ? "Key Skills" : "Habilidades Clave";
+  document.getElementById("oSummary").textContent = cv.summary;
+  document.getElementById("oExp").innerHTML = cv.experience.map(function(e) {
+    return '<div class="cexp">'
+      + '<div class="cexp-row">'
+      + '<div><span class="cexp-role">' + e.role + '</span> <span class="cexp-co">· ' + e.company + '</span></div>'
+      + '<span class="cexp-dates">' + e.dates + '</span>'
+      + '</div>'
+      + '<ul class="cbullets">' + e.bullets.map(function(b) { return "<li>" + b + "</li>"; }).join("") + "</ul>"
+      + '</div>';
+  }).join("");
+  document.getElementById("oEdu").innerHTML = cv.education.map(function(e) {
+    return '<div class="cedu-d">' + e.degree + '</div><div class="cedu-s">' + e.school + " · " + e.year + "</div>";
+  }).join("");
+  document.getElementById("oLang").innerHTML = (cv.languages || []).join("<br>");
+  document.getElementById("oSkills").innerHTML = cv.skills.map(function(s) {
+    return '<span class="cskill">' + s + "</span>";
+  }).join("");
+}
+
+function printCV() {
+  if (!lastCV) return;
+  var cv = lastCV;
+  var isEn = lang === "en";
+  var l = isEn
+    ? { p:"Professional Profile", e:"Experience", ed:"Education", la:"Languages", s:"Key Skills" }
+    : { p:"Perfil Profesional", e:"Experiencia", ed:"Educacion", la:"Idiomas", s:"Habilidades Clave" };
+  var expHTML = cv.experience.map(function(e) {
+    return '<div class="exp"><div class="er"><div><span class="erole">' + e.role + '</span> <span class="eco">· ' + e.company + '</span></div><span class="edates">' + e.dates + '</span></div><ul>'
+      + e.bullets.map(function(b) { return "<li>" + b + "</li>"; }).join("")
+      + "</ul></div>";
+  }).join("");
+  var w = window.open("", "_blank");
+  w.document.write('<!DOCTYPE html><html><head><title>CV ' + cv.name + '</title>'
+    + '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">'
+    + '<style>@page{margin:0;size:letter}*{box-sizing:border-box;margin:0;padding:0}body{font-family:\'DM Sans\',sans-serif;width:8.5in;height:11in;overflow:hidden;-webkit-print-color-adjust:exact;print-color-adjust:exact}.hd{background:#1a1a2e!important;padding:1.1rem 1.7rem}h1{font-family:\'DM Serif Display\',serif;color:white;font-size:23px}.role{color:#e8c547;font-size:13px;font-weight:500;margin-top:3px}.contacts{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}.contact{font-size:11px;color:rgba(255,255,255,.65)}.bd{padding:1.1rem 1.7rem}.st{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#1a1a2e;border-bottom:2px solid #e8c547;padding-bottom:3px;margin-bottom:7px;margin-top:10px}.summary{font-size:12px;line-height:1.6;color:#333;margin-bottom:10px}.exp{margin-bottom:8px}.er{display:flex;justify-content:space-between;align-items:baseline}.erole{font-size:12.5px;font-weight:600;color:#1a1a2e}.eco{color:#b8960a;font-size:12px;font-weight:500}.edates{font-size:10.5px;color:#888}ul{padding-left:14px;margin-top:3px}li{font-size:11px;line-height:1.5;color:#333;margin-bottom:1px}.two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:8px}.skill{background:#f0efe6;border-radius:3px;padding:2px 7px;font-size:10.5px;color:#1a1a2e;display:inline-block;margin:2px}.edu-d{font-size:11.5px;font-weight:500;color:#1a1a2e}.edu-s{font-size:10.5px;color:#666;margin-bottom:4px}.lang{font-size:11.5px;color:#333;line-height:1.8}</style></head><body>'
+    + '<div class="hd"><h1>' + cv.name + '</h1><div class="role">' + cv.targetTitle + '</div>'
+    + '<div class="contacts">' + [cv.email, cv.phone, cv.linkedin].map(function(c) { return '<span class="contact">' + c + '</span>'; }).join('<span class="contact"> · </span>') + '</div></div>'
+    + '<div class="bd">'
+    + '<div class="st">' + l.p + '</div><div class="summary">' + cv.summary + '</div>'
+    + '<div class="st">' + l.e + '</div>' + expHTML
+    + '<div class="two"><div>'
+    + '<div class="st">' + l.ed + '</div>' + cv.education.map(function(e) { return '<div class="edu-d">' + e.degree + '</div><div class="edu-s">' + e.school + ' · ' + e.year + '</div>'; }).join("")
+    + '<div class="st" style="margin-top:8px">' + l.la + '</div><div class="lang">' + (cv.languages || []).join("<br>") + '</div>'
+    + '</div><div>'
+    + '<div class="st">' + l.s + '</div>' + cv.skills.map(function(s) { return '<span class="skill">' + s + '</span>'; }).join("")
+    + '</div></div></div></body></html>');
+  w.document.close();
+  setTimeout(function() { w.print(); }, 600);
+}
+
+function copyPlain() {
+  if (!lastCV) return;
+  var cv = lastCV;
+  var t = cv.name + "\n" + cv.targetTitle + "\n" + cv.email + " | " + cv.phone + " | " + cv.linkedin + "\n\n";
+  t += "PERFIL\n" + cv.summary + "\n\nEXPERIENCIA\n";
+  cv.experience.forEach(function(e) {
+    t += e.role + " - " + e.company + " (" + e.dates + ")\n";
+    e.bullets.forEach(function(b) { t += "- " + b + "\n"; });
+    t += "\n";
+  });
+  t += "HABILIDADES\n" + cv.skills.join(", ") + "\n\nEDUCACION\n";
+  cv.education.forEach(function(e) { t += e.degree + " - " + e.school + " " + e.year + "\n"; });
+  t += "\nIDIOMAS\n" + (cv.languages || []).join(" | ");
+  navigator.clipboard.writeText(t).then(function() { alert("Copiado al portapapeles"); });
+}
+
 window.onload = function() {
-  document.getElementById('jobTitle').value = 'Head of eCommerce & Growth';
-  document.getElementById('company').value = 'MercadoLibre';
-  document.getElementById('industry').value = 'eCommerce / Retail Digital';
-  document.getElementById('seniority').value = 'Manager';
-  document.getElementById('jobDesc').value = 'Buscamos líder de eCommerce con experiencia en paid media, CRM, growth hacking, marketplace (Amazon/ML), data analytics y liderazgo de equipos. Deseable experiencia en VTEX o Shopify, Google Ads, Meta Ads y manejo de KPIs de conversión.';
-};
-</script>
-</body></html>`);
-  w.document.close(); setTimeout(()=>w.print(),600);
-}
-
-function copyPlain(){
-  if(!lastCV) return; const cv=lastCV;
-  let t=`${cv.name}\n${cv.targetTitle}\n${cv.email} | ${cv.phone} | ${cv.linkedin}\n\n`;
-  t+=`PERFIL\n${cv.summary}\n\nEXPERIENCIA\n`;
-  cv.experience.forEach(e=>{t+=`${e.role} · ${e.company} (${e.dates})\n`;e.bullets.forEach(b=>t+=`• ${b}\n`);t+='\n';});
-  t+=`HABILIDADES\n${cv.skills.join(', ')}\n\nEDUCACIÓN\n`;
-  cv.education.forEach(e=>t+=`${e.degree} · ${e.school} · ${e.year}\n`);
-  t+=`\nIDIOMAS\n${(cv.languages||[]).join(' | ')}`;
-  navigator.clipboard.writeText(t).then(()=>alert('✓ Copiado'));
-}
-
-initChips();
-</script>
-
-<script>
-window.onload = function() {
-  document.getElementById('jobTitle').value = 'Head of eCommerce & Growth';
-  document.getElementById('company').value = 'MercadoLibre';
-  document.getElementById('industry').value = 'eCommerce / Retail Digital';
-  document.getElementById('seniority').value = 'Manager';
-  document.getElementById('jobDesc').value = 'Buscamos líder de eCommerce con experiencia en paid media, CRM, growth hacking, marketplace (Amazon/ML), data analytics y liderazgo de equipos. Deseable experiencia en VTEX o Shopify, Google Ads, Meta Ads y manejo de KPIs de conversión.';
+  initChips();
+  document.getElementById("jobTitle").value = "Head of eCommerce & Growth";
+  document.getElementById("company").value = "MercadoLibre";
+  document.getElementById("industry").value = "eCommerce / Retail Digital";
+  document.getElementById("seniority").value = "Manager";
+  document.getElementById("jobDesc").value = "Lider de eCommerce con experiencia en paid media, CRM, growth hacking, marketplace Amazon y ML, data analytics y liderazgo de equipos. Deseable VTEX, Shopify, Google Ads, Meta Ads, KPIs de conversion.";
 };
 </script>
 </body>
