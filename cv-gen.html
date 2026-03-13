@@ -239,15 +239,15 @@ function generate() {
     + "JSON structure:\n"
     + '{"name":"string","targetTitle":"string","email":"string","phone":"string","linkedin":"string","summary":"string","experience":[{"role":"string","company":"string","dates":"string","bullets":["string","string","string"]}],"skills":["string"],"education":[{"degree":"string","school":"string","year":"string"}],"languages":["string"]}';
 
-  fetch(OR_URL, {
+  fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + OR_KEY, "HTTP-Referer": "https://uzarcor.github.io", "X-Title": "CV Generator UZR" },
-    body: JSON.stringify({ model: OR_MODEL, messages: [{ role: "user", content: prompt }], temperature: 0.7, max_tokens: 2000 })
+    headers: { "Content-Type": "application/json", "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+    body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 2000, messages: [{ role: "user", content: prompt }] })
   })
   .then(function(res) { return res.json(); })
   .then(function(data) {
-    if (data.error) throw new Error(data.error.message);
-    var raw = data.choices[0].message.content;
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    var raw = data.content[0].text;
     var s = raw.indexOf("{");
     var e = raw.lastIndexOf("}") + 1;
     if (s === -1) throw new Error("No JSON en respuesta: " + raw.substring(0, 200));
