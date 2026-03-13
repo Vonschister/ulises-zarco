@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Generator · Ulises Zarco Rivera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a1a2e;
+    --gold: #e8c547;
+    --gold-light: #f5e48b;
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --border: rgba(26,26,46,0.1);
+    --text: #1a1a2e;
+    --muted: #6b6b80;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* ─── PASSWORD SCREEN ─── */
+  #lockScreen {
+    position: fixed; inset: 0; background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; flex-direction: column; gap: 1.5rem;
+  }
+  #lockScreen.hidden { display: none; }
+  .lock-logo { font-family: 'DM Serif Display', serif; color: var(--gold); font-size: 42px; }
+  .lock-sub { color: rgba(255,255,255,0.5); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .lock-form { display: flex; flex-direction: column; gap: 10px; width: 280px; }
+  .lock-form input {
+    background: rgba(255,255,255,0.07); border: 0.5px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius); padding: 12px 16px; color: white;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .lock-form input:focus { border-color: var(--gold); }
+  .lock-form input::placeholder { color: rgba(255,255,255,0.3); }
+  .lock-btn {
+    background: var(--gold); color: var(--navy); border: none; border-radius: var(--radius);
+    padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: opacity 0.15s;
+  }
+  .lock-btn:hover { opacity: 0.88; }
+  .lock-error { color: #ff6b6b; font-size: 12px; text-align: center; display: none; }
+
+  /* ─── APP LAYOUT ─── */
+  #app { display: none; }
+  #app.visible { display: block; }
+
+  .topbar {
+    background: var(--navy); padding: 0 2rem; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .topbar-logo { font-family: 'DM Serif Display', serif; color: var(--gold); font-size: 22px; }
+  .topbar-title { color: rgba(255,255,255,0.7); font-size: 13px; }
+  .topbar-sep { color: rgba(255,255,255,0.2); }
+  .topbar-label { color: var(--gold); font-size: 13px; font-weight: 500; }
+  .topbar-right { display: flex; align-items: center; gap: 8px; }
+  .lang-toggle { display: flex; border: 0.5px solid rgba(255,255,255,0.2); border-radius: 6px; overflow: hidden; }
+  .lang-btn { padding: 5px 14px; font-size: 12px; font-weight: 500; background: transparent; border: none; cursor: pointer; color: rgba(255,255,255,0.5); transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .lang-btn.active { background: var(--gold); color: var(--navy); }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; display: grid; grid-template-columns: 420px 1fr; gap: 1.5rem; }
+  @media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+
+  /* ─── FORM PANEL ─── */
+  .panel { background: var(--surface); border: 0.5px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+  .panel-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1.25rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group:last-child { margin-bottom: 0; }
+  label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 5px; }
+  input[type="text"], select, textarea {
+    width: 100%; padding: 9px 12px; border: 0.5px solid var(--border);
+    border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13.5px;
+    color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s;
+  }
+  input[type="text"]:focus, select:focus, textarea:focus { border-color: var(--navy); background: white; }
+  textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b80' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+
+  .skills-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .skill-chip {
+    display: flex; align-items: center; gap: 5px; padding: 5px 10px;
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: 20px; font-size: 12px; color: var(--muted); cursor: pointer;
+    transition: all 0.15s; user-select: none;
+  }
+  .skill-chip:hover { border-color: var(--navy); color: var(--text); }
+  .skill-chip.on { background: var(--navy); border-color: var(--navy); color: var(--gold); }
+  .skill-chip .chk { font-size: 10px; opacity: 0.6; }
+  .skill-chip.on .chk { opacity: 1; }
+
+  .gen-btn {
+    width: 100%; padding: 13px; background: var(--navy); color: var(--gold);
+    border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: opacity 0.15s;
+    margin-top: 1.25rem; letter-spacing: 0.02em;
+  }
+  .gen-btn:hover { opacity: 0.85; }
+  .gen-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* ─── RESULT PANEL ─── */
+  .result-panel { display: flex; flex-direction: column; gap: 1rem; }
+  .empty-state {
+    background: var(--surface); border: 0.5px dashed var(--border);
+    border-radius: 14px; padding: 3rem 2rem; text-align: center;
+    color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .empty-icon { font-size: 36px; opacity: 0.3; }
+  .empty-text { font-size: 14px; line-height: 1.6; }
+
+  .loading-panel {
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: 14px; padding: 3rem 2rem; text-align: center;
+    display: none; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .loading-panel.show { display: flex; }
+  .spinner { width: 28px; height: 28px; border: 2.5px solid var(--border); border-top-color: var(--navy); border-radius: 50%; animation: spin 0.65s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 13px; color: var(--muted); }
+
+  /* ─── CV PREVIEW ─── */
+  .cv-card {
+    background: white; border: 0.5px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+    box-shadow: 0 4px 24px rgba(26,26,46,0.08);
+    display: none;
+  }
+  .cv-card.show { display: block; }
+
+  .cv-hd { background: var(--navy); padding: 1.5rem 2rem; }
+  .cv-hd-name { font-family: 'DM Serif Display', serif; color: white; font-size: 27px; line-height: 1.1; }
+  .cv-hd-role { color: var(--gold); font-size: 13.5px; font-weight: 500; margin-top: 4px; }
+  .cv-hd-contacts { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 10px; }
+  .cv-hd-contact { font-size: 11.5px; color: rgba(255,255,255,0.65); }
+
+  .cv-bd { padding: 1.5rem 2rem; }
+  .cv-section { margin-bottom: 1.3rem; }
+  .cv-sec-title {
+    font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--navy);
+    border-bottom: 2px solid var(--gold); padding-bottom: 4px; margin-bottom: 10px;
+  }
+  .cv-summary { font-size: 12.5px; line-height: 1.65; color: #333; }
+
+  .cv-exp-item { margin-bottom: 12px; }
+  .cv-exp-item:last-child { margin-bottom: 0; }
+  .cv-exp-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .cv-exp-role { font-size: 13px; font-weight: 600; color: var(--navy); }
+  .cv-exp-co { color: #b8960a; font-size: 12.5px; font-weight: 500; }
+  .cv-exp-dates { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .cv-bullets { padding-left: 16px; margin-top: 4px; }
+  .cv-bullets li { font-size: 11.5px; line-height: 1.55; color: #333; margin-bottom: 2px; }
+
+  .cv-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .cv-skills-wrap { display: flex; flex-wrap: wrap; gap: 5px; }
+  .cv-skill { background: #f0efe6; border-radius: 3px; padding: 3px 8px; font-size: 11px; color: var(--navy); }
+  .cv-edu-item { margin-bottom: 7px; }
+  .cv-edu-degree { font-size: 12px; font-weight: 500; color: var(--navy); }
+  .cv-edu-school { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .cv-lang { font-size: 12px; color: #333; line-height: 1.8; }
+
+  /* ─── EXPORT BAR ─── */
+  .export-bar {
+    display: none; gap: 8px;
+  }
+  .export-bar.show { display: flex; }
+  .exp-btn {
+    flex: 1; padding: 11px; border-radius: var(--radius); font-size: 13px;
+    font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s; border: 0.5px solid var(--border);
+    background: white; color: var(--text);
+  }
+  .exp-btn:hover { background: var(--bg); }
+  .exp-btn.primary { background: var(--navy); color: var(--gold); border-color: var(--navy); }
+  .exp-btn.primary:hover { opacity: 0.85; }
+  .exp-btn.copy { background: white; }
+
+  .hint {
+    font-size: 12px; color: var(--muted); background: var(--bg);
+    border-radius: 8px; padding: 8px 12px; line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<!-- ░░░ LOCK SCREEN ░░░ -->
+<div id="lockScreen">
+  <div class="lock-logo">UZR</div>
+  <div class="lock-sub">Smart CV Generator</div>
+  <div class="lock-form">
+    <input type="password" id="pwInput" placeholder="Contraseña de acceso" onkeydown="if(event.key==='Enter')unlock()" />
+    <input type="text" id="apiInput" placeholder="Anthropic API Key (sk-ant-...)" onkeydown="if(event.key==='Enter')unlock()" />
+    <button class="lock-btn" onclick="unlock()">Entrar →</button>
+    <div class="lock-error" id="lockError">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- ░░░ APP ░░░ -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">UZR</div>
+      <span class="topbar-sep">·</span>
+      <span class="topbar-title">Ulises Zarco Rivera</span>
+      <span class="topbar-sep">·</span>
+      <span class="topbar-label">Smart CV Generator</span>
+    </div>
+    <div class="topbar-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btnEs" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" id="btnEn" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- LEFT: FORM -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+
+      <div class="panel">
+        <div class="panel-title">Datos de la vacante</div>
+        <div class="form-group">
+          <label>Puesto / Job Title *</label>
+          <input type="text" id="jobTitle" placeholder="ej. Head of Growth, eCommerce Manager..." />
+        </div>
+        <div class="form-group">
+          <label>Empresa / Company</label>
+          <input type="text" id="company" placeholder="ej. MercadoLibre, Rappi..." />
+        </div>
+        <div class="form-group">
+          <label>Industria</label>
+          <select id="industry">
+            <option value="">Selecciona...</option>
+            <option>eCommerce / Retail Digital</option>
+            <option>Fintech / Banca Digital</option>
+            <option>Startup / Scale-up</option>
+            <option>FMCG / CPG</option>
+            <option>SaaS / Tech</option>
+            <option>Agencia Digital</option>
+            <option>Marketplace</option>
+            <option>Media / Entretenimiento</option>
+            <option>Salud / Wellness</option>
+            <option>Educación / EdTech</option>
+            <option>Otra</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nivel del rol</label>
+          <select id="seniority">
+            <option value="Senior Individual Contributor">Senior IC / Especialista</option>
+            <option value="Manager / Team Lead">Manager / Team Lead</option>
+            <option value="Director">Director</option>
+            <option value="VP / C-Level">VP / C-Level</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Job Description o palabras clave</label>
+          <textarea id="jobDesc" placeholder="Pega el JD completo o las habilidades clave que piden. Cuanto más detalle, más preciso el CV generado..."></textarea>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Énfasis de habilidades</div>
+        <div class="skills-wrap" id="skillsWrap"></div>
+        <div class="hint" style="margin-top:10px;">Selecciona las que quieres destacar. Si no eliges ninguna, la IA decide según el JD.</div>
+      </div>
+
+      <button class="gen-btn" id="genBtn" onclick="generate()">Generar CV inteligente →</button>
+    </div>
+
+    <!-- RIGHT: RESULT -->
+    <div class="result-panel">
+
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">◎</div>
+        <div class="empty-text">Completa el formulario y genera<br>tu CV adaptado a la vacante</div>
+      </div>
+
+      <div class="loading-panel" id="loadingPanel">
+        <div class="spinner"></div>
+        <div class="loading-text">Adaptando CV a la vacante...</div>
+      </div>
+
+      <div class="cv-card" id="cvCard">
+        <div class="cv-hd">
+          <div class="cv-hd-name" id="outName"></div>
+          <div class="cv-hd-role" id="outRole"></div>
+          <div class="cv-hd-contacts" id="outContacts"></div>
+        </div>
+        <div class="cv-bd">
+          <div class="cv-section">
+            <div class="cv-sec-title" id="lblProfile">Perfil Profesional</div>
+            <div class="cv-summary" id="outSummary"></div>
+          </div>
+          <div class="cv-section">
+            <div class="cv-sec-title" id="lblExp">Experiencia</div>
+            <div id="outExp"></div>
+          </div>
+          <div class="cv-cols">
+            <div>
+              <div class="cv-section">
+                <div class="cv-sec-title" id="lblEdu">Educación</div>
+                <div id="outEdu"></div>
+              </div>
+              <div class="cv-section">
+                <div class="cv-sec-title" id="lblLang">Idiomas</div>
+                <div class="cv-lang" id="outLang"></div>
+              </div>
+            </div>
+            <div class="cv-section">
+              <div class="cv-sec-title" id="lblSkills">Habilidades Clave</div>
+              <div class="cv-skills-wrap" id="outSkills"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="export-bar" id="exportBar">
+        <button class="exp-btn copy" onclick="copyPlain()">Copiar texto plano</button>
+        <button class="exp-btn primary" onclick="printCV()">Exportar PDF →</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+const ACCESS_PASSWORD = "uzr2025cv";   // ← CAMBIA ESTO
+
+// ─── PROFILE DATA ─────────────────────────────────────────
+const PROFILE = {
+  name: "Ulises Zarco Rivera, MFA",
+  email: "uzarcor@gmail.com",
+  phone: "+1 409 995 4108",
+  linkedin: "linkedin.com/in/ulises-zarco",
+  experience: [
+    { role: "Co-founder", company: "Holizenter", dates: "11/2023 – 10/2025",
+      bullets: ["Co-fundé y construí identidad de marca, visión y estrategia financiera.","Ejecuté estrategias de growth e inbound: podcasts, email, eventos live y LinkedIn thought-leadership.","Diseñé campañas omnicanal y establecí partnerships sin agencias externas."] },
+    { role: "Digital Marketing & CRM Manager", company: "Banco Autofin / Kapital", dates: "10/2022 – 11/2023",
+      bullets: ["Lideré transformación digital con GA4 y reporting centralizado, reduciendo latencia de datos 75%.","Diseñé campañas de performance generando 1,900+ leads/mes y reduciendo CAC 20%.","Implementé Zoho CRM con lead scoring y journeys automatizados, aumentando conversión 30%+.","Dirigí NPS y estudios UX; mejoré NPS +8 puntos. Renovación de IVR: de 150s a 33s."] },
+    { role: "Marketing Manager", company: "Yummy Inc", dates: "01/2022 – 09/2022",
+      bullets: ["Lancé campañas OoH y digitales en entrada al mercado.","Coordiné agencias de PR y performance; gestioné campañas push/SMS/email con Infobip.","Creé dashboards de KPIs para gestión de ROI y presupuestos."] },
+    { role: "E-commerce Optimization Specialist", company: "OfficeMax", dates: "10/2020 – 12/2021",
+      bullets: ["Gestioné key accounts (HP, Brother, Crayola, Henkel) y obtuve Google Partner certification.","Dirigí paid media (Google Ads, Meta Ads), incrementando ROI 22%.","Segmenté bases de datos para email marketing: open rate +18%, CTR +12%.","Negocié acuerdos comerciales con marcas para ampliar alcance y revenue."] },
+    { role: "Digital Marketing Manager", company: "Carnival de México", dates: "06/2018 – 09/2020",
+      bullets: ["Lideré refresh de marca en lanzamiento digital y presencia omnicanal.","Desarrollé eCommerce en sitio propio, Amazon y Mercado Libre desde cero.","Supervisé equipos creativos y técnicos internos (diseñador + full-stack dev)."] },
+    { role: "Content Manager", company: "Bloom Tulum", dates: "01/2016 – 05/2018",
+      bullets: ["Desarrollé estrategias de funnel para generación de leads inmobiliarios.","Diseñé campañas de paid media en Meta y Google Ads.","Publiqué contenido de marca en medios premium (ej. revista Aeroméxico)."] }
+  ],
+  education: [
+    { degree: "MFA — Guión y Producción Audiovisual", school: "Universidad Panamericana", year: "2018" },
+    { degree: "Diplomado en Marketing Digital", school: "Universidad Panamericana", year: "2017" },
+    { degree: "Ing. en Animación Digital", school: "Universidad Panamericana", year: "2016" }
+  ],
+  skills: { hard: ["Google Analytics / GA4","Google Ads","Meta Ads","HubSpot","Zoho CRM","Salesforce","VTEX","Shopify","Magento","Semrush","SQL","HTML","Monday / Jira / Trello"], soft: ["Liderazgo de equipos","Resolución de problemas","Comunicación estratégica","Gestión de proyectos","Adaptabilidad"] },
+  languages: ["Español (nativo)","Inglés (fluido)","Alemán (intermedio)"]
+};
+
+const SKILLS_LIST = ["Performance Marketing","eCommerce","CRM / Automatización","Data Analytics","Growth Hacking","Brand Strategy","Email Marketing","Paid Media","SEO / SEM","Product Marketing","Liderazgo de equipos","UX / CX","Marketplace (Amazon/ML)","Transformación Digital","KPIs & Dashboards","Agile / Scrum"];
+
+let selectedSkills = [];
+let selectedLang = 'es';
+let lastCV = null;
+let apiKey = '';
+
+// ─── LOCK ─────────────────────────────────────────────────
+function unlock() {
+  const pw = document.getElementById('pwInput').value;
+  const key = document.getElementById('apiInput').value.trim();
+  if (pw !== ACCESS_PASSWORD) {
+    document.getElementById('lockError').style.display = 'block';
+    return;
+  }
+  if (!key.startsWith('sk-ant-')) {
+    document.getElementById('lockError').style.display = 'block';
+    document.getElementById('lockError').textContent = 'API Key inválida (debe empezar con sk-ant-)';
+    return;
+  }
+  apiKey = key;
+  document.getElementById('lockScreen').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
+}
+
+// ─── SKILLS CHIPS ─────────────────────────────────────────
+function initSkills() {
+  const wrap = document.getElementById('skillsWrap');
+  SKILLS_LIST.forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'skill-chip';
+    el.innerHTML = `<span class="chk">+</span>${s}`;
+    el.onclick = () => {
+      const i = selectedSkills.indexOf(s);
+      if (i > -1) { selectedSkills.splice(i,1); el.classList.remove('on'); el.querySelector('.chk').textContent = '+'; }
+      else { selectedSkills.push(s); el.classList.add('on'); el.querySelector('.chk').textContent = '✓'; }
+    };
+    wrap.appendChild(el);
+  });
+}
+
+function setLang(l) {
+  selectedLang = l;
+  document.getElementById('btnEs').classList.toggle('active', l==='es');
+  document.getElementById('btnEn').classList.toggle('active', l==='en');
+}
+
+// ─── GENERATE ─────────────────────────────────────────────
+async function generate() {
+  const jobTitle = document.getElementById('jobTitle').value.trim();
+  if (!jobTitle) { alert('Ingresa el título del puesto.'); return; }
+
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true; btn.textContent = 'Generando…';
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('cvCard').classList.remove('show');
+  document.getElementById('exportBar').classList.remove('show');
+  document.getElementById('loadingPanel').classList.add('show');
+
+  const isEn = selectedLang === 'en';
+  const emphasisNote = selectedSkills.length > 0
+    ? `Emphasize these skills prominently: ${selectedSkills.join(', ')}.`
+    : 'Choose the most relevant skills based on the JD.';
+
+  const prompt = `You are an expert ATS-optimized CV writer. Generate a tailored one-page CV for this candidate.
+
+CANDIDATE PROFILE (JSON):
+${JSON.stringify(PROFILE, null, 2)}
+
+TARGET ROLE:
+- Title: ${jobTitle}
+- Company: ${document.getElementById('company').value || 'Not specified'}
+- Industry: ${document.getElementById('industry').value || 'Digital Marketing'}
+- Seniority: ${document.getElementById('seniority').value}
+- Job Description / Keywords: ${document.getElementById('jobDesc').value || 'Not provided — infer from role and industry'}
+
+INSTRUCTIONS:
+1. ${isEn ? 'Write the ENTIRE output in English. Translate everything.' : 'Escribe todo en español.'}
+2. ${emphasisNote}
+3. Professional summary: 2–3 punchy sentences tailored to THIS role. Quantify impact. No generic filler.
+4. Select 3–4 most relevant past roles. Rewrite bullets using JD keywords. Max 3 bullets each.
+5. Skills: pick 10–12 most relevant. Include emphasized skills.
+6. targetTitle should reflect the target role (not generic).
+7. ATS rules: standard section names, keyword-rich, no tables for key info.
+8. Return ONLY valid JSON. No markdown. No explanation. Exact structure:
+{
+  "name": "Ulises Zarco Rivera, MFA",
+  "targetTitle": "...",
+  "email": "uzarcor@gmail.com",
+  "phone": "+1 409 995 4108",
+  "linkedin": "linkedin.com/in/ulises-zarco",
+  "summary": "...",
+  "experience": [
+    {"role":"...","company":"...","dates":"...","bullets":["...","...","..."]}
+  ],
+  "skills": ["..."],
+  "education": [{"degree":"...","school":"...","year":"..."}],
+  "languages": ["..."]
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    const text = data.content.map(i => i.text||'').join('');
+    const cv = JSON.parse(text.replace(/```json|```/g,'').trim());
+    lastCV = cv;
+
+    document.getElementById('loadingPanel').classList.remove('show');
+    renderCV(cv, isEn);
+    document.getElementById('cvCard').classList.add('show');
+    document.getElementById('exportBar').classList.add('show');
+  } catch(e) {
+    document.getElementById('loadingPanel').classList.remove('show');
+    document.getElementById('emptyState').style.display = 'flex';
+    document.getElementById('emptyState').innerHTML = `<div class="empty-icon" style="color:#e24b4b;">✕</div><div class="empty-text">Error al generar. Revisa tu API key o conexión.<br><small>${e.message}</small></div>`;
+  }
+
+  btn.disabled = false; btn.textContent = 'Generar CV inteligente →';
+}
+
+// ─── RENDER ───────────────────────────────────────────────
+function renderCV(cv, isEn) {
+  document.getElementById('outName').textContent = cv.name;
+  document.getElementById('outRole').textContent = cv.targetTitle;
+  document.getElementById('outContacts').innerHTML =
+    [cv.email, cv.phone, cv.linkedin].map(c=>`<span class="cv-hd-contact">${c}</span>`).join('<span class="cv-hd-contact">·</span>');
+
+  if (isEn) {
+    document.getElementById('lblProfile').textContent = 'Professional Profile';
+    document.getElementById('lblExp').textContent = 'Experience';
+    document.getElementById('lblEdu').textContent = 'Education';
+    document.getElementById('lblLang').textContent = 'Languages';
+    document.getElementById('lblSkills').textContent = 'Key Skills';
+  } else {
+    document.getElementById('lblProfile').textContent = 'Perfil Profesional';
+    document.getElementById('lblExp').textContent = 'Experiencia';
+    document.getElementById('lblEdu').textContent = 'Educación';
+    document.getElementById('lblLang').textContent = 'Idiomas';
+    document.getElementById('lblSkills').textContent = 'Habilidades Clave';
+  }
+
+  document.getElementById('outSummary').textContent = cv.summary;
+
+  document.getElementById('outExp').innerHTML = cv.experience.map(e => `
+    <div class="cv-exp-item">
+      <div class="cv-exp-row">
+        <div><span class="cv-exp-role">${e.role}</span> <span class="cv-exp-co">· ${e.company}</span></div>
+        <span class="cv-exp-dates">${e.dates}</span>
+      </div>
+      <ul class="cv-bullets">${e.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+    </div>`).join('');
+
+  document.getElementById('outEdu').innerHTML = cv.education.map(e => `
+    <div class="cv-edu-item">
+      <div class="cv-edu-degree">${e.degree}</div>
+      <div class="cv-edu-school">${e.school} · ${e.year}</div>
+    </div>`).join('');
+
+  document.getElementById('outLang').innerHTML = cv.languages.join('<br>');
+  document.getElementById('outSkills').innerHTML = cv.skills.map(s=>`<span class="cv-skill">${s}</span>`).join('');
+}
+
+// ─── EXPORT ───────────────────────────────────────────────
+function printCV() {
+  if (!lastCV) return;
+  const cv = lastCV;
+  const isEn = selectedLang === 'en';
+  const lbl = isEn
+    ? { profile:'Professional Profile', exp:'Experience', edu:'Education', lang:'Languages', skills:'Key Skills' }
+    : { profile:'Perfil Profesional', exp:'Experiencia', edu:'Educación', lang:'Idiomas', skills:'Habilidades Clave' };
+
+  const expHTML = cv.experience.map(e=>`
+    <div style="margin-bottom:9px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;">
+        <div><strong style="font-size:12.5px;">${e.role}</strong> <span style="color:#b8960a;font-size:12px;font-weight:500;">· ${e.company}</span></div>
+        <span style="font-size:10.5px;color:#888;white-space:nowrap;">${e.dates}</span>
+      </div>
+      <ul style="padding-left:16px;margin-top:3px;">${e.bullets.map(b=>`<li style="font-size:11px;line-height:1.5;color:#333;margin-bottom:1.5px;">${b}</li>`).join('')}</ul>
+    </div>`).join('');
+
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>CV — ${cv.name}</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    @page { margin: 0; size: letter; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; width:8.5in; height:11in; overflow:hidden; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .hd { background:#1a1a2e !important; padding:1.2rem 1.8rem; }
+    h1 { font-family:'DM Serif Display',serif; color:white; font-size:24px; }
+    .role { color:#e8c547; font-size:13px; font-weight:500; margin-top:3px; }
+    .contacts { display:flex; flex-wrap:wrap; gap:14px; margin-top:8px; }
+    .contact { font-size:11px; color:rgba(255,255,255,0.65); }
+    .bd { padding:1.2rem 1.8rem; }
+    .sec-title { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.1em; color:#1a1a2e; border-bottom:2px solid #e8c547; padding-bottom:3px; margin-bottom:8px; }
+    .summary { font-size:12px; line-height:1.65; color:#333; margin-bottom:1rem; }
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; margin-top:1rem; }
+    .skill { background:#f0efe6; border-radius:3px; padding:2px 7px; font-size:10.5px; color:#1a1a2e; display:inline-block; margin:2px; }
+    .edu-degree { font-size:11.5px; font-weight:500; color:#1a1a2e; }
+    .edu-school { font-size:10.5px; color:#666; margin-bottom:5px; }
+    .lang { font-size:11.5px; color:#333; line-height:1.9; }
+  </style></head><body>
+  <div class="hd"><h1>${cv.name}</h1><div class="role">${cv.targetTitle}</div>
+  <div class="contacts">${[cv.email,cv.phone,cv.linkedin].map(c=>`<span class="contact">${c}</span>`).join('<span class="contact">·</span>')}</div></div>
+  <div class="bd">
+    <div class="sec-title">${lbl.profile}</div>
+    <div class="summary">${cv.summary}</div>
+    <div class="sec-title">${lbl.exp}</div>
+    ${expHTML}
+    <div class="two">
+      <div>
+        <div class="sec-title" style="margin-top:8px;">${lbl.edu}</div>
+        ${cv.education.map(e=>`<div class="edu-degree">${e.degree}</div><div class="edu-school">${e.school} · ${e.year}</div>`).join('')}
+        <div class="sec-title" style="margin-top:10px;">${lbl.lang}</div>
+        <div class="lang">${cv.languages.join('<br>')}</div>
+      </div>
+      <div>
+        <div class="sec-title" style="margin-top:8px;">${lbl.skills}</div>
+        <div>${cv.skills.map(s=>`<span class="skill">${s}</span>`).join('')}</div>
+      </div>
+    </div>
+  </div></body></html>`);
+  w.document.close();
+  setTimeout(()=>{ w.print(); }, 700);
+}
+
+function copyPlain() {
+  if (!lastCV) return;
+  const cv = lastCV;
+  let t = `${cv.name}\n${cv.targetTitle}\n${cv.email} | ${cv.phone} | ${cv.linkedin}\n\n`;
+  t += `PERFIL\n${cv.summary}\n\n`;
+  t += `EXPERIENCIA\n`;
+  cv.experience.forEach(e => { t += `${e.role} · ${e.company} (${e.dates})\n`; e.bullets.forEach(b=>t+=`• ${b}\n`); t+='\n'; });
+  t += `HABILIDADES\n${cv.skills.join(', ')}\n\n`;
+  t += `EDUCACIÓN\n`;
+  cv.education.forEach(e=>t+=`${e.degree} · ${e.school} · ${e.year}\n`);
+  t += `\nIDIOMAS\n${cv.languages.join(' | ')}`;
+  navigator.clipboard.writeText(t).then(()=>alert('✓ Copiado al portapapeles'));
+}
+
+initSkills();
+</script>
+</body>
+</html>
