@@ -241,7 +241,7 @@ function generate() {
 
   fetch(OR_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + OR_KEY },
+    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + OR_KEY, "HTTP-Referer": "https://uzarcor.github.io", "X-Title": "CV Generator UZR" },
     body: JSON.stringify({ model: OR_MODEL, messages: [{ role: "user", content: prompt }], temperature: 0.7, max_tokens: 2000 })
   })
   .then(function(res) { return res.json(); })
