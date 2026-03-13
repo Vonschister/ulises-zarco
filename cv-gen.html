@@ -335,7 +335,7 @@
 // ─── CONFIG ───────────────────────────────────────────────
 const ACCESS_PASSWORD = "uzr2025cv"; // ← cambia esto
 const GEMINI_KEY = "AIzaSyCmlPdus6o-Jzrm7t1_CDvuTtyNq2fPTCY";
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${GEMINI_KEY}`;
 
 // ─── PROFILE DATA ─────────────────────────────────────────
 const PROFILE = {
@@ -469,14 +469,12 @@ INSTRUCTIONS:
       })
     });
     const data = await res.json();
-    console.log("=== GEMINI RAW RESPONSE ===", JSON.stringify(data, null, 2));
 
     if (data.error) throw new Error(`API Error ${data.error.code}: ${data.error.message}`);
     if (!data.candidates || !data.candidates[0]) throw new Error(`No candidates in response. Full response: ${JSON.stringify(data)}`);
     if (!data.candidates[0].content) throw new Error(`No content in candidate. Finish reason: ${data.candidates[0].finishReason}. Full: ${JSON.stringify(data.candidates[0])}`);
 
     const raw = data.candidates[0].content.parts[0].text;
-    console.log("=== RAW TEXT ===", raw.substring(0, 300));
 
     const clean = raw.replace(/```json\n?|```/g, '').trim();
     const jsonStart = clean.indexOf('{');
@@ -491,10 +489,9 @@ INSTRUCTIONS:
     document.getElementById('cvCard').classList.add('show');
     document.getElementById('exportBar').classList.add('show');
   } catch(e) {
-    console.error("=== CV GENERATOR ERROR ===", e);
     document.getElementById('loadingPanel').classList.remove('show');
     document.getElementById('emptyState').style.display = 'flex';
-    document.getElementById('emptyState').innerHTML = `<div class="empty-icon" style="color:#e24b4b;">✕</div><div class="empty-text" style="font-size:12px;text-align:left;word-break:break-all;"><strong>Error detallado:</strong><br>${e.message}<br><br><em>Abre DevTools (F12) → Console para ver la respuesta completa de Gemini.</em></div>`;
+    document.getElementById('emptyState').innerHTML = `<div class="empty-icon" style="color:#e24b4b;">✕</div><div class="empty-text">${e.message}</div>`;
   }
 
   btn.disabled = false; btn.textContent = 'Generar CV inteligente →';
